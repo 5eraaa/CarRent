@@ -1,0 +1,97 @@
+
+body {
+    background-color: #0b0f1a;
+    color: #e5f3ff;
+    font-family: 'Segoe UI', sans-serif;
+}
+
+header, nav.main-nav {
+    background-color: #0f172a;
+    border-bottom: 1px solid #1e293b;
+    color: #ffffff;
+}
+
+.logo {
+    color: #00e0ff !important;
+}
+
+.auth-buttons .btn-primary,
+.auth-buttons .btn-secondary,
+button,
+input[type="submit"],
+.btn-primary,
+.btn-secondary {
+    background-color: #00e0ff;
+    color: #0b0f1a;
+    border: none;
+    padding: 0.5rem 1rem;
+    border-radius: 6px;
+    font-weight: bold;
+    transition: 0.3s;
+}
+
+.auth-buttons .btn-secondary,
+.btn-secondary {
+    background-color: transparent;
+    border: 1px solid #00e0ff;
+    color: #00e0ff;
+}
+
+button:hover,
+input[type="submit"]:hover,
+.btn-primary:hover,
+.btn-secondary:hover {
+    background-color: #38bdf8;
+    color: #0b0f1a;
+    cursor: pointer;
+}
+
+input[type="text"],
+input[type="email"],
+input[type="password"],
+input[type="number"],
+textarea {
+    background-color: #1e293b;
+    border: 1px solid #334155;
+    color: #e5f3ff;
+    border-radius: 4px;
+    padding: 0.4rem 0.6rem;
+    width: 100%;
+    margin-bottom: 1rem;
+}
+
+input::placeholder, textarea::placeholder {
+    color: #94a3b8;
+}
+
+.card, .auth-section, .filters-container, .cars-grid, footer {
+    background-color: #0f172a;
+    border-radius: 12px;
+    padding: 1rem;
+    box-shadow: 0 0 8px rgba(0, 224, 255, 0.2);
+    margin-bottom: 2rem;
+}
+
+.car-card {
+    background-color: #1e293b;
+    border-radius: 8px;
+    padding: 1rem;
+    box-shadow: 0 0 5px rgba(0, 224, 255, 0.2);
+    transition: transform 0.2s ease;
+}
+
+.car-card:hover {
+    transform: scale(1.02);
+}
+
+.car-price {
+    color: #00e0ff;
+    font-weight: bold;
+}
+
+footer {
+    text-align: center;
+    padding: 1rem;
+    color: #94a3b8;
+    border-top: 1px solid #1e293b;
+}
