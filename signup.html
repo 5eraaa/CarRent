@@ -1,0 +1,93 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Sign Up - Car Reservation</title>
+    <link rel="stylesheet" href="styles.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+</head>
+<body>
+    <header>
+        <nav class="main-nav">
+            <a href="index.html" class="logo">CarRent</a>
+            <ul class="nav-links">
+                <li><a href="index.html">Cars</a></li>
+                <li><a href="for-you.html">For you</a></li>
+                <li><a href="about.html">About us</a></li>
+            </ul>
+            <div class="auth-buttons">
+                <a href="login.html" class="btn-secondary">Login</a>
+                <a href="signup.html" class="btn-primary active">Sign Up</a>
+            </div>
+            <div class="top-utilities">
+                <div class="language-selector">
+                    <button class="selector-button" id="language-btn">
+                        <span>EN</span>
+                        <i class="fas fa-chevron-down"></i>
+                    </button>
+                    <div class="selector-dropdown" id="language-dropdown">
+                        <a href="#" data-lang="en">English</a>
+                        <a href="#" data-lang="ar">العربية</a>
+                        <a href="#" data-lang="fr">Français</a>
+                    </div>
+                </div>
+                <div class="currency-selector">
+                    <button class="selector-button" id="currency-btn">
+                        <span>USD</span>
+                        <i class="fas fa-chevron-down"></i>
+                    </button>
+                    <div class="selector-dropdown" id="currency-dropdown">
+                        <a href="#" data-currency="usd">USD</a>
+                        <a href="#" data-currency="eur">EUR</a>
+                        <a href="#" data-currency="gbp">GBP</a>
+                    </div>
+                </div>
+            </div>
+        </nav>
+    </header>
+    
+    <main>
+        <section class="auth-section">
+            <h1>Sign up</h1>
+            <form class="auth-form">
+                <div class="form-group">
+                    <label for="email">Email</label>
+                    <input type="email" id="email" placeholder="Enter your email">
+                </div>
+                <div class="form-group">
+                    <label for="name">Name</label>
+                    <input type="text" id="name" placeholder="Enter your name">
+                </div>
+                <div class="form-group">
+                    <label for="password">Password</label>
+                    <input type="password" id="password" placeholder="Create a password">
+                </div>
+                <div class="form-group">
+                    <label for="confirm-password">Confirm Password</label>
+                    <input type="password" id="confirm-password" placeholder="Confirm your password">
+                </div>
+                <div class="form-group">
+                    <label for="phone">Phone number</label>
+                    <input type="tel" id="phone" placeholder="Enter your phone number">
+                </div>
+                <div class="form-group">
+                    <label for="id">ID</label>
+                    <input type="text" id="id" placeholder="Enter your ID">
+                </div>
+                <button type="submit" class="btn-primary">Sign up</button>
+                <div class="error-message"></div>
+            </form>
+            <div class="auth-redirect">
+                <p>Already have an account? <a href="login.html">Login</a></p>
+            </div>
+        </section>
+    </main>
+    
+    <footer>
+        <p>&copy; 2025 CarRent. All rights reserved.</p>
+    </footer>
+
+    <script src="main.js"></script>
+</body>
+</html>
