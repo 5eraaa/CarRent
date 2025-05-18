@@ -1,0 +1,94 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>My Bookings - Car Reservation</title>
+    <link rel="stylesheet" href="styles.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+</head>
+<body>
+    <header>
+        <nav class="main-nav">
+            <a href="index.html" class="logo">CarRent</a>
+            <ul class="nav-links">
+                <li><a href="index.html">Cars</a></li>
+                <li><a href="about.html">About us</a></li>
+            </ul>
+            <div class="auth-buttons">
+                <!-- This will be replaced by user menu via JavaScript -->
+                <a href="login.html" class="btn-secondary">Login</a>
+                <a href="signup.html" class="btn-primary">Sign Up</a>
+            </div>
+            <div class="top-utilities">
+                <div class="language-selector">
+                    <button class="selector-button" id="language-btn">
+                        <span>EN</span>
+                        <i class="fas fa-chevron-down"></i>
+                    </button>
+                    <div class="selector-dropdown" id="language-dropdown">
+                        <a href="#" data-lang="en">English</a>
+                        <a href="#" data-lang="ar">العربية</a>
+                    </div>
+                </div>
+                <div class="currency-selector">
+                    <button class="selector-button" id="currency-btn">
+                        <span>USD</span>
+                        <i class="fas fa-chevron-down"></i>
+                    </button>
+                    <div class="selector-dropdown" id="currency-dropdown">
+                        <a href="#" data-currency="usd">USD</a>
+                        <a href="#" data-currency="egp">EGP</a>
+                    </div>
+                </div>
+            </div>
+        </nav>
+    </header>
+    
+    <main>
+        <section class="bookings-section">
+            <div class="bookings-header">
+                <h1>My Bookings</h1>
+            </div>
+            
+            <div class="booking-list">
+                <div class="booking-item">
+                    <div class="booking-details">
+                        <div class="booking-car">Toyota Camry</div>
+                        <div class="booking-date">May 15, 2025 - May 20, 2025</div>
+                        <div class="booking-status active">Active</div>
+                    </div>
+                    <div class="booking-actions">
+                        <a href="#" class="btn-primary">Extend</a>
+                    </div>
+                </div>
+                
+                <div class="booking-item">
+                    <div class="booking-details">
+                        <div class="booking-car">Honda Civic</div>
+                        <div class="booking-date">April 10, 2025 - April 15, 2025</div>
+                        <div class="booking-status completed">Completed</div>
+                    </div>
+                    <div class="booking-actions">
+                        <a href="#" class="btn-primary">Book Again</a>
+                    </div>
+                </div>
+                
+                <div class="booking-item">
+                    <div class="booking-details">
+                        <div class="booking-car">Ford Focus</div>
+                        <div class="booking-date">March 5, 2025 - March 8, 2025</div>
+                        <div class="booking-status cancelled">Cancelled</div>
+                    </div>
+                </div>
+            </div>
+        </section>
+    </main>
+    
+    <footer>
+        <p>&copy; 2025 CarRent. All rights reserved.</p>
+    </footer>
+
+    <script src="main.js"></script>
+</body>
+</html>
