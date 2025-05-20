@@ -17,6 +17,7 @@
     --footer-color: white;
     --shadow: rgba(0,0,0,0.1);
     --hero-bg: #f0f4f8;
+    --overlay-bg: rgba(240, 237, 233, 0.8);
 }
 
 .dark-mode {
@@ -37,6 +38,7 @@
     --footer-color: #e0e0e0;
     --shadow: rgba(0,0,0,0.3);
     --hero-bg: #1a1a1a;
+    --overlay-bg: rgba(0, 0, 0, 0.5);
 }
 
 * {
@@ -1084,3 +1086,23 @@ footer {
   background-color: var(--card-bg);
   color: var(--foreground);
 }
+
+.hero {
+    background-image: url('car-background.jpg');
+    background-size: cover;
+    background-position: center;
+    background-repeat: no-repeat;
+    position: relative;
+    min-height: 400px;
+    padding: 70px 20px;
+    text-align: center;
+}
+
+
+.hero .overlay {
+    background-color: var(--overlay-bg);
+    padding: 10px;
+    border-radius: 50px;
+    backdrop-filter: blur(0.5px); 
+}
+
