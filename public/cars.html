@@ -50,7 +50,7 @@
             </div>
         </nav>
     </header>
-    
+
     <main>
         <!-- Filters Section -->
         <section class="filters-section">
@@ -59,21 +59,16 @@
                 <input type="text" placeholder="Search for cars..." id="car-search">
                 <button class="btn-primary" id="search-btn">Search</button>
             </div>
-            
+
             <div class="filters-container">
-                <!-- Filter Row 1: Loyalty Points and Filters -->
+                <!-- Filter Row 1: Filters -->
                 <div class="filter-row">
-                    <div class="filter-group">
-                        <label>Loyalty points</label>
-                        <div class="loyalty-points-display">150 points</div>
-                    </div>
-                    
+
                     <div class="filter-buttons">
-                        <button class="filter-btn" id="recommended-filter">Recommended</button>
-                        <button class="filter-btn active" id="available-filter">Available</button>
+                        <button class="filter-btn active" id="available-filter">Available Cars</button>
                     </div>
                 </div>
-                
+
                 <!-- Filter Row 2: Sorting Options -->
                 <div class="filter-row">
                     <label>Sorting:</label>
@@ -81,90 +76,172 @@
                         <button class="sort-btn active" data-sort="new">Newly Added</button>
                         <button class="sort-btn" data-sort="price-desc">Price Descending</button>
                         <button class="sort-btn" data-sort="price-asc">Price Ascending</button>
-                        <button class="sort-btn" data-sort="rating">Rating</button>
                     </div>
                 </div>
-                
-                <!-- Price Range Slider -->
+
+                <!-- Price Range -->
                 <div class="price-range-container">
                     <label>Price Range:</label>
-                    
-                    <div class="price-slider-wrapper">
-                        <div class="slider-track"></div>
-                        <div class="slider-range"></div>
-                        <input type="range" min="0" max="200" value="0" class="price-slider" id="min-price-slider">
-                        <input type="range" min="0" max="200" value="200" class="price-slider" id="max-price-slider">
-                    </div>
-                    
+
                     <div class="price-display">
-                        <span id="min-price-display">$0</span>
-                        <span id="max-price-display">$200</span>
+                        <span id="min-price-display">£0</span>
+                        <span id="max-price-display">£5000</span>
                     </div>
-                    
+
                     <div class="price-inputs">
-                        <input type="number" id="min-price-input" min="0" max="200" value="0" placeholder="Min">
+                        <input type="number" id="min-price-input" min="0" max="5000" value="0" placeholder="Min">
                         <span>to</span>
-                        <input type="number" id="max-price-input" min="0" max="200" value="200" placeholder="Max">
+                        <input type="number" id="max-price-input" min="0" max="5000" value="5000" placeholder="Max">
                         <button class="btn-secondary" id="apply-price-filter">Apply</button>
                     </div>
                 </div>
             </div>
         </section>
-        
+
         <!-- Cars Section -->
         <section class="cars-section">
             <h2>Available Cars</h2>
             <div class="cars-grid" id="cars-container">
-                <div class="car-card" onclick="window.location.href='car-details.html'">
-                    <div class="car-image">Toyota Camry</div>
-                    <div class="car-info">
-                        <div class="car-name">Toyota Camry</div>
-                        <div class="car-price">$10/hour</div>
-                    </div>
-                </div>
-                <div class="car-card" onclick="window.location.href='car-details.html'">
-                    <div class="car-image">Honda Civic</div>
-                    <div class="car-info">
-                        <div class="car-name">Honda Civic</div>
-                        <div class="car-price">$9/hour</div>
-                    </div>
-                </div>
-                <div class="car-card" onclick="window.location.href='car-details.html'">
-                    <div class="car-image">Ford Focus</div>
-                    <div class="car-info">
-                        <div class="car-name">Ford Focus</div>
-                        <div class="car-price">$8/hour</div>
-                    </div>
-                </div>
-                <div class="car-card" onclick="window.location.href='car-details.html'">
-                    <div class="car-image">Nissan Altima</div>
-                    <div class="car-info">
-                        <div class="car-name">Nissan Altima</div>
-                        <div class="car-price">$11/hour</div>
-                    </div>
-                </div>
-                <div class="car-card" onclick="window.location.href='car-details.html'">
-                    <div class="car-image">Hyundai Elantra</div>
-                    <div class="car-info">
-                        <div class="car-name">Hyundai Elantra</div>
-                        <div class="car-price">$8.5/hour</div>
-                    </div>
-                </div>
-                <div class="car-card" onclick="window.location.href='car-details.html'">
-                    <div class="car-image">Chevrolet Malibu</div>
-                    <div class="car-info">
-                        <div class="car-name">Chevrolet Malibu</div>
-                        <div class="car-price">$9.5/hour</div>
-                    </div>
-                </div>
+                <div class="loading">Loading cars...</div>
             </div>
         </section>
     </main>
-    
+
     <footer>
         <p>&copy; 2025 CarRent. All rights reserved.</p>
     </footer>
 
     <script src="main.js"></script>
+    <!-- Update the filter buttons to match backend capabilities -->
+    <script>
+        document.addEventListener('DOMContentLoaded', function () {
+            // Initialize the page
+            console.log("Cars page loaded");
+
+            // Check login status
+            checkLoginStatus();
+
+            // Setup car functionality
+            setupCarFunctionality();
+
+            // Add event listener for available filter button
+            const availableFilter = document.getElementById("available-filter");
+            
+            if (availableFilter) {
+                // Set available filter as active by default
+                availableFilter.classList.add("active");
+                
+                // Add click event listener
+                availableFilter.addEventListener("click", function() {
+                    // Toggle active class
+                    this.classList.toggle("active");
+                    
+                    // Update button text based on state
+                    if (this.classList.contains("active")) {
+                        this.textContent = "Available Cars";
+                    } else {
+                        this.textContent = "All Cars";
+                    }
+                    
+                    // Get the current filter state
+                    const showOnlyAvailable = this.classList.contains("active");
+                    
+                    // Get the current sort option
+                    const activeSort = document.querySelector(".sort-btn.active");
+                    const sortValue = activeSort ? activeSort.getAttribute("data-sort") : "new";
+                    
+                    // Load cars with the updated filter
+                    loadCarsFromAPI({ 
+                        available: showOnlyAvailable, 
+                        sort: sortValue 
+                    });
+                    
+                    // Update the section heading
+                    const sectionHeading = document.querySelector(".cars-section h2");
+                    if (sectionHeading) {
+                        sectionHeading.textContent = showOnlyAvailable ? "Available Cars" : "All Cars";
+                    }
+                });
+            }
+
+            // Setup sorting buttons
+            const sortButtons = document.querySelectorAll(".sort-btn");
+            
+            if (sortButtons) {
+                sortButtons.forEach(button => {
+                    button.addEventListener("click", function() {
+                        // Remove active class from all sort buttons
+                        sortButtons.forEach(btn => btn.classList.remove("active"));
+                        
+                        // Add active class to clicked button
+                        this.classList.add("active");
+                        
+                        // Get sort value
+                        const sortValue = this.getAttribute("data-sort");
+                        
+                        // Get available filter state
+                        const availableFilter = document.getElementById("available-filter");
+                        const showOnlyAvailable = availableFilter && availableFilter.classList.contains("active");
+                        
+                        // Load cars with the selected sort and filter
+                        loadCarsFromAPI({ 
+                            available: showOnlyAvailable, 
+                            sort: sortValue 
+                        });
+                    });
+                });
+            }
+
+            // Setup search functionality
+            const searchInput = document.getElementById("car-search");
+            const searchButton = document.getElementById("search-btn");
+
+            if (searchInput && searchButton) {
+                // Add event listener for search button
+                searchButton.addEventListener("click", function () {
+                    const searchTerm = searchInput.value.trim();
+                    if (searchTerm) {
+                        searchCars(searchTerm);
+                    } else {
+                        // If search is empty, reload with current filters
+                        const availableFilter = document.getElementById("available-filter");
+                        const showOnlyAvailable = availableFilter && availableFilter.classList.contains("active");
+                        
+                        const activeSort = document.querySelector(".sort-btn.active");
+                        const sortValue = activeSort ? activeSort.getAttribute("data-sort") : "new";
+
+                        loadCarsFromAPI({ available: showOnlyAvailable, sort: sortValue });
+                    }
+                });
+
+                // Add event listener for Enter key
+                searchInput.addEventListener("keyup", function (event) {
+                    if (event.key === "Enter") {
+                        searchButton.click();
+                    }
+                });
+            }
+
+            // Setup price filter
+            const minPriceInput = document.getElementById("min-price-input");
+            const maxPriceInput = document.getElementById("max-price-input");
+            const applyPriceFilterBtn = document.getElementById("apply-price-filter");
+
+            if (minPriceInput && maxPriceInput && applyPriceFilterBtn) {
+                // Initialize with default values
+                const symbol = getCurrencySymbol();
+                document.getElementById("min-price-display").textContent = `${symbol}0`;
+                document.getElementById("max-price-display").textContent = `${symbol}5000`;
+
+                // Add event listener for price filter button
+                applyPriceFilterBtn.addEventListener("click", function () {
+                    const minPrice = Number(minPriceInput.value) || 0;
+                    const maxPrice = Number(maxPriceInput.value) || 5000;
+
+                    filterCarsByPrice(minPrice, maxPrice);
+                });
+            }
+        });
+    </script>
 </body>
 </html>

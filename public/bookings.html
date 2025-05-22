@@ -44,51 +44,341 @@
             </div>
         </nav>
     </header>
-    
+
     <main>
         <section class="bookings-section">
             <div class="bookings-header">
                 <h1>My Bookings</h1>
             </div>
-            
+
             <div class="booking-list">
-                <div class="booking-item">
-                    <div class="booking-details">
-                        <div class="booking-car">Toyota Camry</div>
-                        <div class="booking-date">May 15, 2025 - May 20, 2025</div>
-                        <div class="booking-status active">Active</div>
-                    </div>
-                    <div class="booking-actions">
-                        <a href="#" class="btn-primary">Extend</a>
-                    </div>
-                </div>
-                
-                <div class="booking-item">
-                    <div class="booking-details">
-                        <div class="booking-car">Honda Civic</div>
-                        <div class="booking-date">April 10, 2025 - April 15, 2025</div>
-                        <div class="booking-status completed">Completed</div>
-                    </div>
-                    <div class="booking-actions">
-                        <a href="#" class="btn-primary">Book Again</a>
-                    </div>
-                </div>
-                
-                <div class="booking-item">
-                    <div class="booking-details">
-                        <div class="booking-car">Ford Focus</div>
-                        <div class="booking-date">March 5, 2025 - March 8, 2025</div>
-                        <div class="booking-status cancelled">Cancelled</div>
-                    </div>
-                </div>
+                <!-- Loading state -->
+                <div class="loading">Loading your bookings...</div>
             </div>
         </section>
     </main>
-    
+
     <footer>
         <p>&copy; 2025 CarRent. All rights reserved.</p>
     </footer>
 
-    <script src="main.js"></script>
+    <script>
+        // Define API_BASE_URL
+        const API_BASE_URL = "http://localhost:3000/api";
+
+        document.addEventListener('DOMContentLoaded', function () {
+            console.log("Bookings page loaded");
+
+            // Check if user is logged in
+            const token = localStorage.getItem("token");
+            if (!token) {
+                console.log("No token found, redirecting to login");
+                window.location.href = "login.html";
+                return;
+            }
+
+            console.log("Token found, updating UI");
+
+            // Update the auth buttons with user menu
+            checkLoginStatus();
+
+            // Load user's bookings
+            loadUserBookings();
+        });
+
+        async function loadUserBookings() {
+            console.log("Starting to load user bookings");
+
+            const bookingList = document.querySelector(".booking-list");
+            if (!bookingList) {
+                console.error("Booking list container not found");
+                return;
+            }
+
+            // Show loading state
+            bookingList.innerHTML = '<div class="loading">Loading your bookings...</div>';
+
+            try {
+                const token = localStorage.getItem("token");
+
+                console.log("Fetching bookings from:", `${API_BASE_URL}/users/bookings`);
+                console.log("Using token:", token ? "Token exists" : "No token");
+
+                // Make the API request with proper headers
+                const response = await fetch(`${API_BASE_URL}/users/bookings`, {
+                    method: "GET",
+                    headers: {
+                        "Authorization": `Bearer ${token}`,
+                        "Content-Type": "application/json"
+                    }
+                });
+
+                console.log("Bookings response status:", response.status);
+
+                // Handle non-200 responses
+                if (!response.ok) {
+                    let errorMessage = "Failed to load bookings";
+                    try {
+                        const errorData = await response.json();
+                        errorMessage = errorData.error || errorMessage;
+                        console.error("Error response data:", errorData);
+                    } catch (e) {
+                        const errorText = await response.text();
+                        console.error("Error response text:", errorText);
+                    }
+                    throw new Error(errorMessage);
+                }
+
+                // Parse the JSON response
+                const bookings = await response.json();
+                console.log("Raw bookings data:", JSON.stringify(bookings, null, 2));
+
+                // Display the bookings
+                displayBookings(bookings);
+            } catch (error) {
+                console.error("Error loading bookings:", error);
+
+                // Show error message
+                bookingList.innerHTML = `
+                        <div class="error">
+                            <p>Error loading bookings: ${error.message}</p>
+                            <p>Please try again later or contact support.</p>
+                            <button class="btn-primary" onclick="loadUserBookings()">Try Again</button>
+                        </div>
+                    `;
+            }
+        }
+
+        function displayBookings(bookings) {
+            console.log("Displaying bookings:", bookings);
+
+            const bookingList = document.querySelector(".booking-list");
+            if (!bookingList) {
+                console.error("Booking list container not found");
+                return;
+            }
+
+            // Clear loading state
+            bookingList.innerHTML = '';
+
+            if (!bookings || bookings.length === 0) {
+                console.log("No bookings found or empty array received");
+                bookingList.innerHTML = `
+                        <div class="no-bookings">
+                            <p>You have no active bookings.</p>
+                            <p><a href="index.html" class="btn-primary">Browse Cars</a></p>
+                        </div>
+                    `;
+                return;
+            }
+
+            console.log(`Displaying ${bookings.length} bookings`);
+
+            // Get currency info
+            const currency = localStorage.getItem("currency") || "usd";
+            const symbol = currency === "usd" ? "$" : "E£";
+            const rate = currency === "usd" ? 1 : 31.15; // Simple conversion rate
+
+            // Add each booking
+            bookings.forEach(booking => {
+                console.log("Processing booking:", booking._id);
+
+                const bookingItem = document.createElement('div');
+                bookingItem.className = 'booking-item';
+
+                const statusClass = booking.status === 'active' ? 'active' :
+                    booking.status === 'completed' ? 'completed' : 'cancelled';
+
+                // Format dates
+                const startDate = booking.reservation && booking.reservation.start_time ?
+                    new Date(booking.reservation.start_time).toLocaleString() : 'N/A';
+                const endDate = booking.reservation && booking.reservation.end_time ?
+                    new Date(booking.reservation.end_time).toLocaleString() : 'N/A';
+
+                // Calculate duration
+                const hours = booking.reservation ? booking.reservation.hours || 0 : 0;
+                const minutes = booking.reservation ? booking.reservation.minutes || 0 : 0;
+                const durationText = hours > 0 || minutes > 0 ?
+                    `${hours}h ${minutes}m` : 'N/A';
+
+                // Calculate price
+                let priceDisplay = '';
+                if (booking.car && booking.car.price_per_hour) {
+                    const hourlyPrice = (booking.car.price_per_hour * rate).toFixed(2);
+                    const totalPrice = booking.reservation && booking.reservation.total_price ?
+                        (booking.reservation.total_price * rate).toFixed(2) : hourlyPrice;
+                    priceDisplay = `
+                            <div class="booking-price">
+                                <div>${symbol}${hourlyPrice}/hour</div>
+                                <div class="booking-total">Total: ${symbol}${totalPrice}</div>
+                            </div>
+                        `;
+                }
+
+                // Create car image HTML
+                const carImageHtml = booking.car && booking.car.image
+                    ? `<img src="${booking.car.image}" alt="${booking.car.name}" class="booking-car-image">`
+                    : `<div class="booking-car-image-placeholder">${booking.car ? booking.car.name.charAt(0) : 'C'}</div>`;
+
+                bookingItem.innerHTML = `
+                        <div class="booking-details">
+                            <div class="booking-car-info">
+                                <div class="booking-car-image-container">
+                                    ${carImageHtml}
+                                </div>
+                                <div class="booking-car-details">
+                                    <div class="booking-car">${booking.car ? booking.car.name : 'Unknown Car'}</div>
+                                    <div class="booking-specs">
+                                        ${booking.car.seats ? `<span><i class="fas fa-user"></i> ${booking.car.seats} seats</span>` : ''}
+                                        ${booking.car.transmission ? `<span><i class="fas fa-cog"></i> ${booking.car.transmission}</span>` : ''}
+                                        ${booking.car.fuel_type ? `<span><i class="fas fa-gas-pump"></i> ${booking.car.fuel_type}</span>` : ''}
+                                    </div>
+                                    <div class="booking-time">
+                                        <div><strong>Start:</strong> ${startDate}</div>
+                                        <div><strong>End:</strong> ${endDate}</div>
+                                        <div><strong>Duration:</strong> ${durationText}</div>
+                                    </div>
+                                    ${priceDisplay}
+                                    <div class="booking-status ${statusClass}">${booking.status}</div>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="booking-actions">
+                            ${booking.status === 'active' ?
+                        `<button class="btn-secondary cancel-booking" data-id="${booking._id}">Cancel</button>` : ''}
+                            <a href="car-details.html?id=${booking.car ? booking.car._id : ''}" class="btn-primary">View Car</a>
+                        </div>
+                    `;
+
+                bookingList.appendChild(bookingItem);
+            });
+
+            // Add event listeners for booking actions
+            document.querySelectorAll('.cancel-booking').forEach(button => {
+                button.addEventListener('click', async function (e) {
+                    e.preventDefault();
+                    const bookingId = this.getAttribute('data-id');
+                    console.log("Cancel button clicked for booking:", bookingId);
+
+                    if (confirm('Are you sure you want to cancel this booking?')) {
+                        try {
+                            const token = localStorage.getItem("token");
+                            console.log("Sending cancellation request for:", bookingId);
+
+                            const response = await fetch(`${API_BASE_URL}/cars/${bookingId}/cancel`, {
+                                method: 'POST',
+                                headers: {
+                                    'Authorization': `Bearer ${token}`,
+                                    'Content-Type': 'application/json'
+                                }
+                            });
+
+                            console.log("Cancellation response status:", response.status);
+
+                            if (!response.ok) {
+                                const errorData = await response.json();
+                                console.error("Cancellation error:", errorData);
+                                throw new Error(errorData.error || 'Failed to cancel booking');
+                            }
+
+                            showToast('Booking cancelled successfully', 'success');
+
+                            // Reload bookings after cancellation
+                            setTimeout(() => {
+                                loadUserBookings();
+                            }, 1000);
+                        } catch (error) {
+                            console.error('Error cancelling booking:', error);
+                            showToast(`Failed to cancel booking: ${error.message}`, 'error');
+                        }
+                    }
+                });
+            });
+        }
+
+        // Simple toast function
+        function showToast(message, type = 'info') {
+            // Create toast container if it doesn't exist
+            let toastContainer = document.querySelector('.toast-container');
+            if (!toastContainer) {
+                toastContainer = document.createElement('div');
+                toastContainer.className = 'toast-container';
+                document.body.appendChild(toastContainer);
+            }
+
+            // Create toast
+            const toast = document.createElement('div');
+            toast.className = `toast ${type}`;
+            toast.innerHTML = `
+                    <div>${message}</div>
+                    <button class="toast-close">&times;</button>
+                `;
+
+            // Add to container
+            toastContainer.appendChild(toast);
+
+            // Add close button functionality
+            toast.querySelector('.toast-close').addEventListener('click', () => {
+                toast.remove();
+            });
+
+            // Auto remove after 3 seconds
+            setTimeout(() => {
+                toast.remove();
+            }, 3000);
+        }
+
+        function checkLoginStatus() {
+            const token = localStorage.getItem("token");
+            const username = localStorage.getItem("username");
+
+            if (token && username) {
+                const authButtons = document.querySelector(".auth-buttons");
+                if (authButtons) {
+                    authButtons.innerHTML = `
+                            <div class="user-menu" style="display: block;">
+                                <button class="user-menu-button">
+                                    <span>${username}</span>
+                                    <span>▼</span>
+                                </button>
+                                <div class="user-menu-dropdown">
+                                    <a href="profile.html">My Profile</a>
+                                    <a href="bookings.html">My Bookings</a>
+                                    <a href="#" id="logout-btn">Logout</a>
+                                </div>
+                            </div>
+                        `;
+
+                    // Add logout event listener
+                    document.getElementById("logout-btn")?.addEventListener("click", (e) => {
+                        e.preventDefault();
+                        logout();
+                    });
+
+                    // Setup user menu dropdown toggle
+                    const userMenuButton = document.querySelector(".user-menu-button");
+                    const userMenuDropdown = document.querySelector(".user-menu-dropdown");
+
+                    if (userMenuButton && userMenuDropdown) {
+                        userMenuButton.addEventListener("click", (e) => {
+                            e.stopPropagation();
+                            userMenuDropdown.classList.toggle("active");
+                        });
+
+                        // Close dropdown when clicking outside
+                        document.addEventListener("click", () => {
+                            userMenuDropdown.classList.remove("active");
+                        });
+                    }
+                }
+            }
+        }
+
+        function logout() {
+            localStorage.removeItem("token");
+            localStorage.removeItem("username");
+            window.location.href = "login.html";
+        }
+    </script>
 </body>
 </html>

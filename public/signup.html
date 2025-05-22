@@ -13,8 +13,8 @@
             <a href="index.html" class="logo">CarRent</a>
             <ul class="nav-links">
                 <li><a href="index.html">Cars</a></li>
-                <li><a href="for-you.html">For you</a></li>
                 <li><a href="about.html">About us</a></li>
+                <li><a href="contact.html">Contact us</a></li>
             </ul>
             <div class="auth-buttons">
                 <a href="login.html" class="btn-secondary">Login</a>
@@ -29,7 +29,6 @@
                     <div class="selector-dropdown" id="language-dropdown">
                         <a href="#" data-lang="en">English</a>
                         <a href="#" data-lang="ar">العربية</a>
-                        <a href="#" data-lang="fr">Français</a>
                     </div>
                 </div>
                 <div class="currency-selector">
@@ -39,9 +38,14 @@
                     </button>
                     <div class="selector-dropdown" id="currency-dropdown">
                         <a href="#" data-currency="usd">USD</a>
-                        <a href="#" data-currency="eur">EUR</a>
-                        <a href="#" data-currency="gbp">GBP</a>
+                        <a href="#" data-currency="egp">EGP</a>
                     </div>
+                </div>
+                <div class="dark-mode-toggle">
+                    <label>
+                        <input type="checkbox" id="dark-mode-toggle">
+                        <span class="slider"></span>
+                    </label>
                 </div>
             </div>
         </nav>
@@ -50,7 +54,7 @@
     <main>
         <section class="auth-section">
             <h1>Sign up</h1>
-            <form class="auth-form">
+            <form class="auth-form" id="signup-form">
                 <div class="form-group">
                     <label for="email">Email</label>
                     <input type="email" id="email" placeholder="Enter your email">
@@ -89,5 +93,46 @@
     </footer>
 
     <script src="main.js"></script>
+    <script>
+        // Additional signup page specific JavaScript
+        document.addEventListener('DOMContentLoaded', function() {
+            const signupForm = document.getElementById('signup-form');
+            
+            if (signupForm) {
+                signupForm.addEventListener('submit', function(e) {
+                    e.preventDefault();
+                    
+                    const email = document.getElementById('email').value;
+                    const name = document.getElementById('name').value;
+                    const password = document.getElementById('password').value;
+                    const confirmPassword = document.getElementById('confirm-password').value;
+                    const phone = document.getElementById('phone').value;
+                    const id = document.getElementById('id').value;
+                    
+                    // Basic validation
+                    if (!email || !name || !password || !confirmPassword || !phone || !id) {
+                        showError('Please fill in all fields');
+                        return;
+                    }
+                    
+                    if (password !== confirmPassword) {
+                        showError('Passwords do not match');
+                        return;
+                    }
+                    
+                    const formData = {
+                        email,
+                        name,
+                        password,
+                        confirmPassword,
+                        phone,
+                        idNumber: id
+                    };
+                    
+                    handleSignup(formData);
+                });
+            }
+        });
+    </script>
 </body>
 </html>
